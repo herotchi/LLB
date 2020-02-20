@@ -8,91 +8,92 @@
     "spike_b": -106
   },
   "Grid": {
-    "up": 37,
-    "ground_down": 19,
-    "air_down": 32,
-    "smash": 28,
-    "spike_f": 26,
-    "spike_b": 3
+    "up": 50,
+    "ground_down": -50,
+    "air_down": -15,
+    "smash": -28,
+    "spike_f": -32,
+    "spike_b": -117
   },
   "Dice": {
     "up": 80,
-    "ground_down": 20,
-    "air_down": 20,
-    "smash": 27,
-    "spike_f": 10,
-    "spike_b": 4
+    "ground_down": -46,
+    "air_down": -46,
+    "smash": -30,
+    "spike_f": -80,
+    "spike_b": -110
   },
   "Latch": {
-    "up": 36,
-    "ground_down": 28,
-    "air_down": 24,
-    "smash": 24,
-    "spike_f": 14,
+    "up": 38,
+    "ground_down": -28,
+    "air_down": -38,
+    "smash": -38,
+    "spike_f": -66,
     "spike_b": 116,
-    "wall_down": -60
+    "wall_up": 38,
+    "wall_down": -120
   },
   "Sonata": {
-    "up": 34,
-    "ground_down": 18,
-    "air_down": 18,
-    "smash": 18,
-    "spike_f": 18,
+    "up": 20,
+    "ground_down": -55,
+    "air_down": -55,
+    "smash": -55,
+    "spike_f": -55,
     "spike_b": 165
   },
   "Switch": {
     "up": 120,
-    "ground_down": 31,
+    "ground_down": -17,
     "air_down": -38,
     "smash": -38,
-    "spike_f": 12,
-    "spike_b": 5,
-    "special": 31
+    "spike_f": -71,
+    "spike_b": -109,
+    "special": -17
   },
   "Raptor": {
     "up": 60,
-    "ground_down": 27,
-    "air_down": 22,
-    "smash": 22,
-    "spike_f": 9,
-    "spike_b": 8
+    "ground_down": -30,
+    "air_down": -42,
+    "smash": -42,
+    "spike_f": -83,
+    "spike_b": -97
   },
   "Candyman": {
-    "up": 35,
-    "ground_down": 18,
-    "air_down": 33,
-    "smash": 13,
-    "spike_f": 29,
+    "up": 25,
+    "ground_down": -55,
+    "air_down": -8,
+    "smash": -70,
+    "spike_f": -25,
     "spike_b": 105
   },
   "Jet": {
     "up": 60,
-    "ground_down": 31,
-    "air_down": 25,
-    "smash": 25,
-    "spike_f": 10,
-    "spike_b": 7
+    "ground_down": -17,
+    "air_down": -35,
+    "smash": -35,
+    "spike_f": -80,
+    "spike_b": -100
   },
-  "DoomBox": {
+  "Doombox": {
     "up": 60,
-    "ground_down": 19,
-    "air_down": 15,
-    "smash": 21,
-    "spike_f": 17,
-    "spike_b": 2
+    "ground_down": -50,
+    "air_down": -64,
+    "smash": -45,
+    "spike_f": -59,
+    "spike_b": -160
   },
   "Nitro": {
     "up": 20,
-    "ground_down": 16,
-    "air_down": 16,
-    "smash": 23,
-    "spike_f": 11,
-    "spike_b": 1
+    "ground_down": -62,
+    "air_down": -62,
+    "smash": -41,
+    "spike_f": -77,
+    "spike_b": -180
   },
   "Dust&Ashes": {
     "up": 15,
     "ground_down": -57,
-    "air_down": 30,
+    "air_down": -21,
     "smash": -33,
     "spike_f": -44,
     "spike_b": -163

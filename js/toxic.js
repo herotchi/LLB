@@ -1,3 +1,6 @@
+// キャラクター
+let character;
+
 // ステージ設定
 // ステージサイズ
 let stageWidth = 800;
@@ -160,7 +163,9 @@ function preload() {
 
 function setup() {
 
-    createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
+    //createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
+    let canvas = createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
+    canvas.parent('canvas');
 
     // ボールの軌跡用レイヤー
     lineLayer = createGraphics(width, height - buttonHeight);
@@ -220,13 +225,16 @@ function setup() {
         }
     }
 
+    // キャラクター情報
+    character = $('#character option:selected').val();
+
     // 角度情報
-    tempUpDirection = -1 * angle.Toxic.up;
-    tempGdDirection = -1 * angle.Toxic.ground_down;
-    tempAdDirection = -1 * angle.Toxic.air_down;
-    tempSmDirection = -1 * angle.Toxic.smash;
-    tempSfDirection = -1 * angle.Toxic.spike_f;
-    tempSbDirection = -1 * angle.Toxic.spike_b;
+    tempUpDirection = -1 * angle[character].up;
+    tempGdDirection = -1 * angle[character].ground_down;
+    tempAdDirection = -1 * angle[character].air_down;
+    tempSmDirection = -1 * angle[character].smash;
+    tempSfDirection = -1 * angle[character].spike_f;
+    tempSbDirection = -1 * angle[character].spike_b;
 
     // ボタン群
     // 再生ボタン
@@ -332,42 +340,42 @@ function setup() {
             upButton.addImage(upOffImage);
             upSp.remove();
             tempUpSpeed = maxSpeed;
-            tempUpDirection = -1 * angle.Toxic.up;
+            tempUpDirection = -1 * angle[character].up;
             upFlg = false;
         }
         if (gdFlg) {
             gdButton.addImage(gdOffImage);
             gdSp.remove();
             tempGdSpeed = maxSpeed;
-            tempGdDirection = -1 * angle.Toxic.ground_down;
+            tempGdDirection = -1 * angle[character].ground_down;
             gdFlg = false;
         }
         if (adFlg) {
             adButton.addImage(adOffImage);
             adSp.remove();
             tempAdSpeed = maxSpeed;
-            tempAdDirection = -1 * angle.Toxic.air_down;
+            tempAdDirection = -1 * angle[character].air_down;
             adFlg = false;
         }
         if (smFlg) {
             smButton.addImage(smOffImage);
             smSp.remove();
             tempSmSpeed = maxSpeed;
-            tempSmDirection = -1 * angle.Toxic.smash;
+            tempSmDirection = -1 * angle[character].smash;
             smFlg = false;
         }
         if (sfFlg) {
             sfButton.addImage(sfOffImage);
             sfSp.remove();
             tempSfSpeed = maxSpeed;
-            tempSfDirection = -1 * angle.Toxic.spike_f;
+            tempSfDirection = -1 * angle[character].spike_f;
             sfFlg = false;
         }
         if (sbFlg) {
             sbButton.addImage(sbOffImage);
             sbSp.remove();
             tempSbSpeed = maxSpeed;
-            tempSbDirection = -1 * angle.Toxic.spike_b;
+            tempSbDirection = -1 * angle[character].spike_b;
             sbFlg = false;
         }
 
@@ -628,12 +636,6 @@ function draw() {
         }
     }
     
-    
-    
-    
-    
-
-
 }
 
 function update() {
@@ -686,3 +688,20 @@ function update() {
     }
 }
 
+$(function() {
+ 
+    //セレクトボックスが切り替わったら発動
+    $('#character').change(function() {
+   
+        //選択したvalue値を変数に格納
+        character = $(this).val();
+        tempUpDirection = -1 * angle[character].up;
+        tempGdDirection = -1 * angle[character].ground_down;
+        tempAdDirection = -1 * angle[character].air_down;
+        tempSmDirection = -1 * angle[character].smash;
+        tempSfDirection = -1 * angle[character].spike_f;
+        tempSbDirection = -1 * angle[character].spike_b;
+        
+
+    });
+  });
