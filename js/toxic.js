@@ -57,8 +57,6 @@ let sbFlg = false;
 // 角度データ
 let angle;
 // 一時的にボールのスピードと方向を保存する変数
-//let tempSpeed = maxSpeed;
-//let tempDirection;
 let tempUpSpeed = maxSpeed;
 let tempUpDirection;
 let tempGdSpeed = maxSpeed;
@@ -163,7 +161,6 @@ function preload() {
 
 function setup() {
 
-    //createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
     let canvas = createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
     canvas.parent('canvas');
 
@@ -273,7 +270,6 @@ function setup() {
             stopFlg = false;
             resetFlg = false;
         }
-        
     }
 
 
@@ -321,15 +317,13 @@ function setup() {
             playFlg = false;
             stopFlg = true;
         }
-        
-    }
+     }
 
     // リセットボタン
     resetButton = createSprite(buttonWidth * 2 + buttonWidth / 2, height -buttonHeight / 2);
     resetButton.addImage(resetOnImage);
     resetButton.scale = 0.4;
     resetButton.onMousePressed = function() {
-        //sp.remove();
 
         playButton.addImage(playOffImage);
         stopButton.addImage(stopOffImage);
@@ -391,8 +385,6 @@ function setup() {
         resetFlg = true;
         stopFlg = true;
     }
-
-
     
 
     // UPボタン
@@ -579,16 +571,18 @@ function setup() {
 
 function draw() {
 
+    // リセット後で球種を選択していない場合のみキャラクターを変更できる
+    if (resetFlg && draggedSprite === null && !upFlg && !gdFlg && !adFlg && !smFlg && !sfFlg && !sbFlg) {
+        $("#character").attr("disabled", false);
+    } else {
+        $("#character").attr("disabled", true);
+    }
+
     // キャンバス背景色
     background(backgroundColor);
 
     // 軌道用キャンバスを描画する
     image(lineLayer, 0, 0);
-
-    // スタート地点のボール
-    //strokeWeight(ballStrokeWeight);
-    //stroke(ballStrokeColor);
-    //ellipse(wallTthickness + stageWidth / 2, wallTthickness + stageHeight / 2, diameter);
 
     update();
     drawSprites();
@@ -635,7 +629,6 @@ function draw() {
             sbStart.y = sbSp.newPosition.y;
         }
     }
-    
 }
 
 function update() {
@@ -647,7 +640,6 @@ function update() {
         draggedSprite.position.x = mouseX + offsetX;
         draggedSprite.position.y = mouseY + offsetY;
     }
-
 
     // ボールと四方の壁との跳ね返り
     if (upFlg) {
@@ -689,11 +681,10 @@ function update() {
 }
 
 $(function() {
- 
-    //セレクトボックスが切り替わったら発動
+    //セレクトボックスが切り替わったら
     $('#character').change(function() {
    
-        //選択したvalue値を変数に格納
+        // 選択されたキャラクターから角度情報を代入する
         character = $(this).val();
         tempUpDirection = -1 * angle[character].up;
         tempGdDirection = -1 * angle[character].ground_down;
@@ -701,7 +692,5 @@ $(function() {
         tempSmDirection = -1 * angle[character].smash;
         tempSfDirection = -1 * angle[character].spike_f;
         tempSbDirection = -1 * angle[character].spike_b;
-        
-
     });
   });
