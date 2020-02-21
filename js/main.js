@@ -3,8 +3,8 @@ let character;
 
 // ステージ設定
 // ステージサイズ
-let stageWidth = 800;
-let stageHeight = 400;
+let stageWidth = 1000;
+let stageHeight = 500;
 // ステージ壁スプライト
 let leftWall;
 let topWall;
@@ -19,9 +19,9 @@ const backgroundColor = 200;
 
 // ボール設定
 // ボールの最大スピードを設定しないと、スピードが上がり過ぎる
-const maxSpeed = 5;
+const maxSpeed = 10;
 // ボール直径
-const diameter = 20;
+const diameter = 15;
 // スプライトの重さ
 const mass = 1;
 // 反発係数
@@ -80,7 +80,7 @@ let offsetY = 0;
 // 軌跡描画レイヤー
 let lineLayer;
 // 軌跡の太さ
-const lineWeight = 8;
+const lineWeight = 6;
 // 軌跡の色
 const upLineColor = "#008000";// 緑
 const gdLineColor = "#0000ff";// 青
