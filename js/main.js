@@ -3,8 +3,8 @@ let character;
 
 // ステージ設定
 // ステージサイズ
-let stageWidth = 1000;
-let stageHeight = 500;
+let stageWidth = 1100;
+let stageHeight = 550;
 // ステージ壁スプライト
 let leftWall;
 let topWall;
@@ -21,7 +21,7 @@ const backgroundColor = 200;
 // ボールの最大スピードを設定しないと、スピードが上がり過ぎる
 const maxSpeed = 10;
 // ボール直径
-const diameter = 15;
+const diameter = 20;
 // スプライトの重さ
 const mass = 1;
 // 反発係数
