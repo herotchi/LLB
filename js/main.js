@@ -3,8 +3,8 @@ let character;
 
 // ステージ設定
 // ステージサイズ
-let stageWidth = 800;
-let stageHeight = 400;
+let stageWidth = 1100;
+let stageHeight = 550;
 // ステージ壁スプライト
 let leftWall;
 let topWall;
@@ -19,7 +19,7 @@ const backgroundColor = 200;
 
 // ボール設定
 // ボールの最大スピードを設定しないと、スピードが上がり過ぎる
-const maxSpeed = 5;
+const maxSpeed = 10;
 // ボール直径
 const diameter = 20;
 // スプライトの重さ
@@ -80,7 +80,7 @@ let offsetY = 0;
 // 軌跡描画レイヤー
 let lineLayer;
 // 軌跡の太さ
-const lineWeight = 8;
+const lineWeight = 6;
 // 軌跡の色
 const upLineColor = "#008000";// 緑
 const gdLineColor = "#0000ff";// 青
@@ -108,15 +108,28 @@ let sbStart;
 const buttonWidth = 60;
 const buttonHeight = 60;
 // ボタン画像変数
-let playImage;
-let stopImage;
-let resetImage;
-let upImage;
-let gdImage;
-let adImage;
-let smImage;
-let sfImage;
-let sbImage;
+let playOnImage;
+let playOffImage;
+let stopOnImage;
+let stopOffImage;
+let resetOnImage;
+let resetOffImage;
+let upOnImage;
+let upOffImage;
+let gdOnImage;
+let gdOffImage;
+let adOnImage;
+let adOffImage;
+let smOnImage;
+let smOffImage;
+let sfOnImage;
+let sfOffImage;
+let sbOnImage;
+let sbOffImage;
+let leftOnImage;
+let leftOffImage;
+let rightOnImage;
+let rightOffImage;
 // ボタンスプライト
 let playButton;
 let stopButton;
@@ -127,6 +140,8 @@ let adButton;
 let smButton;
 let sfButton;
 let sbButton;
+let leftButton;
+let rightButton;
 
 // フラグ設定
 // 再生フラグ
@@ -134,8 +149,9 @@ let playFlg = false;
 // 一時停止フラグ
 let stopFlg = true;
 // リセットフラグ
-//let resetFlg = false;
 let resetFlg = true;
+// 打球方向フラグ
+let rightFlg = true;
 
 function preload() {
     angle = loadJSON('/LLB/json/angle.json');
@@ -157,6 +173,10 @@ function preload() {
     sfOffImage = loadImage('/LLB/img/sf_off.png');
     sbOnImage = loadImage('/LLB/img/sb_on.png');
     sbOffImage = loadImage('/LLB/img/sb_off.png');
+    leftOnImage = loadImage('/LLB/img/left_on.png');
+    leftOffImage = loadImage('/LLB/img/left_off.png');
+    rightOnImage = loadImage('/LLB/img/right_on.png');
+    rightOffImage = loadImage('/LLB/img/right_off.png');
 }
 
 function setup() {
@@ -373,6 +393,10 @@ function setup() {
             sbFlg = false;
         }
 
+        // 打球方向もリセットする
+        leftButton.addImage(leftOffImage);
+        rightButton.addImage(rightOnImage);
+
         start.x = wallTthickness + stageWidth / 2;
         start.y = wallTthickness + stageHeight / 2;
 
@@ -384,6 +408,7 @@ function setup() {
         playFlg = false;
         resetFlg = true;
         stopFlg = true;
+        rightFlg = true;
     }
     
 
@@ -565,6 +590,77 @@ function setup() {
             sbSp.setSpeed(0, 0);
             sbFlg = true;
             sbStart = {x:start.x, y:start.y};
+        }
+    }
+
+    // 右打球ボタン
+    rightButton = createSprite(width - buttonWidth / 2, height -buttonHeight / 2);
+    rightButton.addImage(rightOnImage);
+    rightButton.scale = 0.4;
+    rightButton.onMousePressed = function() {
+        // リセット後で球種を選択していない場合のみ打球方向を変更できる
+        if (resetFlg && !rightFlg && !upFlg && !gdFlg && !adFlg && !smFlg && !sfFlg && !sbFlg) {
+            leftButton.addImage(leftOffImage);
+            rightButton.addImage(rightOnImage);
+
+            tempUpDirection = -1 * angle[character].up;
+            tempGdDirection = -1 * angle[character].ground_down;
+            tempAdDirection = -1 * angle[character].air_down;
+            tempSmDirection = -1 * angle[character].smash;
+            tempSfDirection = -1 * angle[character].spike_f;
+            tempSbDirection = -1 * angle[character].spike_b;
+            
+            rightFlg = true;
+        }
+    }
+
+    // 左打球ボタン
+    leftButton = createSprite(width - (buttonWidth + buttonWidth / 2), height -buttonHeight / 2);
+    leftButton.addImage(leftOffImage);
+    leftButton.scale = 0.4;
+    leftButton.onMousePressed = function() {
+        // リセット後で球種を選択していない場合のみ打球方向を変更できる
+        if (resetFlg && rightFlg && !upFlg && !gdFlg && !adFlg && !smFlg && !sfFlg && !sbFlg) {
+            leftButton.addImage(leftOnImage);
+            rightButton.addImage(rightOffImage);
+            
+            if (angle[character].up > 0) {
+                tempUpDirection = -1 * (180 - angle[character].up);
+            } else {
+                tempUpDirection = -1 * (-180 - angle[character].up);
+            }
+
+            if (angle[character].ground_down > 0) {
+                tempGdDirection = -1 * (180 - angle[character].ground_down);
+            } else {
+                tempGdDirection = -1 * (-180 - angle[character].ground_down);
+            }
+
+            if (angle[character].air_down > 0) {
+                tempAdDirection = -1 * (180 - angle[character].air_down);
+            } else {
+                tempAdDirection = -1 * (-180 - angle[character].air_down);
+            }
+
+            if (angle[character].smash > 0) {
+                tempSmDirection = -1 * (180 - angle[character].smash);
+            } else {
+                tempSmDirection = -1 * (-180 - angle[character].smash);
+            }
+
+            if (angle[character].spike_f > 0) {
+                tempSfDirection = -1 * (180 - angle[character].spike_f);
+            } else {
+                tempSfDirection = -1 * (-180 - angle[character].spike_f);
+            }
+
+            if (angle[character].spike_b > 0) {
+                tempSbDirection = -1 * (180 - angle[character].spike_b);
+            } else {
+                tempSbDirection = -1 * (-180 - angle[character].spike_b);
+            }
+
+            rightFlg = false;
         }
     }
 }
