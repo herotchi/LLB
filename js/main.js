@@ -19,7 +19,7 @@ const backgroundColor = 200;
 
 // ボール設定
 // ボールの最大スピードを設定しないと、スピードが上がり過ぎる
-const maxSpeed = 10;
+const maxSpeed = 5;
 // ボール直径
 const diameter = 20;
 // スプライトの重さ
@@ -70,7 +70,8 @@ let tempSfDirection;
 let tempSbSpeed = maxSpeed;
 let tempSbDirection;
 // ボール射出スタート地点
-let start = {x:wallTthickness + stageWidth / 2, y:wallTthickness + stageHeight / 2};
+// 発射位置がステージの中央だった場合、NITROのSBとDOOMBOXのSMのバウンド処理が上手く動作しないので高さのみずらす
+let start = {x:wallTthickness + stageWidth / 2, y:wallTthickness + stageHeight / 2 + 20};
 
 let draggedSprite = null;
 let offsetX = 0;
@@ -207,7 +208,6 @@ function setup() {
 
     // スタート地点のボールのスプライトを作成
     point = createSprite();
-    //point.debug = true;
     // ボールの射出位置
     point.position.x = start.x;
     point.position.y = start.y;
@@ -398,10 +398,10 @@ function setup() {
         rightButton.addImage(rightOnImage);
 
         start.x = wallTthickness + stageWidth / 2;
-        start.y = wallTthickness + stageHeight / 2;
+        start.y = wallTthickness + stageHeight / 2 + 20;
 
         point.position.x = wallTthickness + stageWidth / 2;
-        point.position.y = wallTthickness + stageHeight / 2;
+        point.position.y = wallTthickness + stageHeight / 2 + 20;
 
         lineLayer.background(backgroundColor);
         
