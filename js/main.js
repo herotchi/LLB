@@ -69,9 +69,10 @@ let tempSfSpeed = maxSpeed;
 let tempSfDirection;
 let tempSbSpeed = maxSpeed;
 let tempSbDirection;
-// ボール射出スタート地点
 // 発射位置がステージの中央だった場合、NITROのSBとDOOMBOXのSMのバウンド処理が上手く動作しないので高さのみずらす
-let start = {x:wallTthickness + stageWidth / 2, y:wallTthickness + stageHeight / 2 + 20};
+const adjustment = -60;
+// ボール射出スタート地点
+let start = {x:wallTthickness + stageWidth / 2, y:wallTthickness + stageHeight / 2 + adjustment};
 
 let draggedSprite = null;
 let offsetX = 0;
@@ -398,10 +399,10 @@ function setup() {
         rightButton.addImage(rightOnImage);
 
         start.x = wallTthickness + stageWidth / 2;
-        start.y = wallTthickness + stageHeight / 2 + 20;
+        start.y = wallTthickness + stageHeight / 2 + adjustment;
 
         point.position.x = wallTthickness + stageWidth / 2;
-        point.position.y = wallTthickness + stageHeight / 2 + 20;
+        point.position.y = wallTthickness + stageHeight / 2 + adjustment;
 
         lineLayer.background(backgroundColor);
         
