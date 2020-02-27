@@ -16,12 +16,22 @@ const wallTthickness = 20;
 const wallColor = "#000000";
 // ステージ背景
 const backgroundColor = 200;
+// ダミー壁のスプライト
+let dummyLeftWall;
+let dummyTopWall;
+let dummyRightWall;
+let dummyBottomWall;
+// ダミー壁の色
+//const dummyWallColor = "#000000";
+const dummyWallColor = "#808080";
 
 // ボール設定
 // ボールの最大スピードを設定しないと、スピードが上がり過ぎる
 const maxSpeed = 5;
 // ボール直径
 const diameter = 20;
+// ダミー壁の厚さ
+const dummyWallTthickness = diameter/2;
 // スプライトの重さ
 const mass = 1;
 // 反発係数
@@ -70,9 +80,11 @@ let tempSfDirection;
 let tempSbSpeed = maxSpeed;
 let tempSbDirection;
 // 発射位置がステージの中央だった場合、NITROのSBとDOOMBOXのSMのバウンド処理が上手く動作しないので高さのみずらす
-const adjustment = -60;
+//const adjustment = -60;
+const adjustment = 0;
 // ボール射出スタート地点
-let start = {x:wallTthickness + stageWidth / 2, y:wallTthickness + stageHeight / 2 + adjustment};
+//let start = {x:wallTthickness + stageWidth / 2, y:wallTthickness + stageHeight / 2 + adjustment};
+let start = {x:wallTthickness + dummyWallTthickness + stageWidth / 2, y:wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment};
 
 let draggedSprite = null;
 let offsetX = 0;
@@ -183,32 +195,62 @@ function preload() {
 
 function setup() {
 
-    let canvas = createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
+    //let canvas = createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
+    let canvas = createCanvas(stageWidth + wallTthickness * 2 + dummyWallTthickness * 2, stageHeight + wallTthickness * 2 + dummyWallTthickness * 2 + buttonHeight);
     canvas.parent('canvas');
 
     // ボールの軌跡用レイヤー
     lineLayer = createGraphics(width, height - buttonHeight);
+    //lineLayer = createGraphics(stageWidth + dummyWallTthickness * 2, stageHeight + dummyWallTthickness * 2);
 
     // 四方の壁スプライトを作成
+    // 天井
     topWall = createSprite(width / 2, wallTthickness / 2, width, wallTthickness);
     topWall.shapeColor = wallColor;
     // 重くて動かない
     topWall.immovable = true;
 
-    bottomWall = createSprite(width / 2, stageHeight + wallTthickness * 1.5, width, wallTthickness);
+    // 四方のダミー壁スプライトを作成
+    // 天井ダミー
+    dummyTopWall = createSprite(width / 2, wallTthickness + dummyWallTthickness / 2, width - wallTthickness * 2, dummyWallTthickness);
+    dummyTopWall.shapeColor = dummyWallColor;
+    // 重くて動かない
+    dummyTopWall.immovable = true;
+
+    // 底
+    bottomWall = createSprite(width / 2, stageHeight + wallTthickness * 1.5 + dummyWallTthickness * 2, width, wallTthickness);
     bottomWall.shapeColor = wallColor;
     bottomWall.immovable = true;
 
-    leftWall = createSprite(wallTthickness / 2, stageHeight / 2 + wallTthickness, wallTthickness, stageHeight + wallTthickness * 2);
+    // 底ダミー
+    dummyBottomWall = createSprite(width / 2, stageHeight + wallTthickness + dummyWallTthickness * 1.5, width - wallTthickness * 2, dummyWallTthickness);
+    dummyBottomWall.shapeColor = dummyWallColor;
+    dummyBottomWall.immovable = true;
+
+    // 左壁
+    leftWall = createSprite(wallTthickness / 2, stageHeight / 2 + wallTthickness + dummyWallTthickness, wallTthickness, stageHeight + wallTthickness * 2 + dummyWallTthickness * 2);
     leftWall.shapeColor = wallColor;
     leftWall.immovable = true;
 
-    rightWall = createSprite(width - wallTthickness / 2, stageHeight / 2 + wallTthickness, wallTthickness, stageHeight + wallTthickness * 2);
+    // 左壁ダミー
+    dummyLeftWall = createSprite(wallTthickness + dummyWallTthickness / 2, stageHeight / 2 + wallTthickness + dummyWallTthickness, dummyWallTthickness, stageHeight + dummyWallTthickness * 2);
+    dummyLeftWall.shapeColor = dummyWallColor;
+    dummyLeftWall.immovable = true;
+
+    // 右壁
+    rightWall = createSprite(width - wallTthickness / 2, stageHeight / 2 + wallTthickness + dummyWallTthickness, wallTthickness, stageHeight + wallTthickness * 2 + dummyWallTthickness * 2);
     rightWall.shapeColor = wallColor;
     rightWall.immovable = true;
 
+    // 右壁ダミー
+    dummyRightWall = createSprite(width - wallTthickness - dummyWallTthickness / 2, stageHeight / 2 + wallTthickness + dummyWallTthickness, dummyWallTthickness, stageHeight + dummyWallTthickness * 2);
+    dummyRightWall.shapeColor = dummyWallColor;
+    dummyRightWall.immovable = true;
+
     // スタート地点のボールのスプライトを作成
     point = createSprite();
+    // 当たり判定確認用
+    point.debug = true;
     // ボールの射出位置
     point.position.x = start.x;
     point.position.y = start.y;
@@ -218,7 +260,9 @@ function setup() {
     point.draw = function() {
         strokeWeight(ballStrokeWeight);
         stroke(ballStrokeColor);
-        fill("#00ff00");
+        //fill("#00ff00");
+        // 当たり判定確認用
+        fill(0);
         ellipse(0, 0, diameter);
     }
     
@@ -398,11 +442,12 @@ function setup() {
         leftButton.addImage(leftOffImage);
         rightButton.addImage(rightOnImage);
 
-        start.x = wallTthickness + stageWidth / 2;
-        start.y = wallTthickness + stageHeight / 2 + adjustment;
+        //let start = {x:wallTthickness + dummyWallTthickness + stageWidth / 2, y:wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment};
+        start.x = wallTthickness + dummyWallTthickness + stageWidth / 2;
+        start.y = wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment;
 
-        point.position.x = wallTthickness + stageWidth / 2;
-        point.position.y = wallTthickness + stageHeight / 2 + adjustment;
+        point.position.x = wallTthickness + dummyWallTthickness + stageWidth / 2;
+        point.position.y = wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment;
 
         lineLayer.background(backgroundColor);
         
@@ -437,7 +482,7 @@ function setup() {
             upSp.position.x = start.x;
             upSp.position.y = start.y;
             // ボールの当たり判定
-            upSp.setCollider("circle", 0, 0, 1);
+            upSp.setCollider("circle", 0, 0, diameter/2);
             // ボールの描画
             upSp.draw = function() {
                 fill(upColor);
@@ -469,7 +514,7 @@ function setup() {
             gdSp.friction = friction;
             gdSp.position.x = start.x;
             gdSp.position.y = start.y;
-            gdSp.setCollider("circle", 0, 0, 1);
+            gdSp.setCollider("circle", 0, 0, diameter/2);
             gdSp.draw = function() {
                 fill(gdColor);
                 strokeWeight(ballStrokeWeight);
@@ -497,7 +542,7 @@ function setup() {
             adSp.friction = friction;
             adSp.position.x = start.x;
             adSp.position.y = start.y;
-            adSp.setCollider("circle", 0, 0, 1);
+            adSp.setCollider("circle", 0, 0, diameter/2);
             adSp.draw = function() {
                 fill(adColor);
                 strokeWeight(ballStrokeWeight);
@@ -525,7 +570,7 @@ function setup() {
             smSp.friction = friction;
             smSp.position.x = start.x;
             smSp.position.y = start.y;
-            smSp.setCollider("circle", 0, 0, 1);
+            smSp.setCollider("circle", 0, 0, diameter/2);
             smSp.draw = function() {
                 fill(smColor);
                 strokeWeight(ballStrokeWeight);
@@ -553,7 +598,7 @@ function setup() {
             sfSp.friction = friction;
             sfSp.position.x = start.x;
             sfSp.position.y = start.y;
-            sfSp.setCollider("circle", 0, 0, 1);
+            sfSp.setCollider("circle", 0, 0, diameter/2);
             sfSp.draw = function() {
                 fill(sfColor);
                 strokeWeight(ballStrokeWeight);
@@ -581,7 +626,7 @@ function setup() {
             sbSp.friction = friction;
             sbSp.position.x = start.x;
             sbSp.position.y = start.y;
-            sbSp.setCollider("circle", 0, 0, 1);
+            sbSp.setCollider("circle", 0, 0, diameter/2);
             sbSp.draw = function() {
                 fill(sbColor);
                 strokeWeight(ballStrokeWeight);
@@ -680,6 +725,7 @@ function draw() {
 
     // 軌道用キャンバスを描画する
     image(lineLayer, 0, 0);
+    //image(lineLayer, wallTthickness, wallTthickness);
 
     update();
     drawSprites();
@@ -732,8 +778,8 @@ function update() {
 
     // nullでないdraggedSpriteをドラッグ
     if (resetFlg && draggedSprite != null
-         && (0 + wallTthickness) <= mouseX && mouseX <= (width - wallTthickness)
-         && (0 + wallTthickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness)) {
+         && (0 + wallTthickness + dummyWallTthickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
+         && (0 + wallTthickness + dummyWallTthickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
         draggedSprite.position.x = mouseX + offsetX;
         draggedSprite.position.y = mouseY + offsetY;
     }
