@@ -22,15 +22,14 @@ let dummyTopWall;
 let dummyRightWall;
 let dummyBottomWall;
 // ダミー壁の色
-//const dummyWallColor = "#000000";
-const dummyWallColor = "#808080";
+const dummyWallColor = "#696969";
 
 // ボール設定
 // ボールの最大スピードを設定しないと、スピードが上がり過ぎる
 const maxSpeed = 5;
 // ボール直径
 const diameter = 20;
-// ダミー壁の厚さ
+// ダミー壁の厚さはボールの半径を等しい
 const dummyWallTthickness = diameter/2;
 // スプライトの重さ
 const mass = 1;
@@ -79,13 +78,9 @@ let tempSfSpeed = maxSpeed;
 let tempSfDirection;
 let tempSbSpeed = maxSpeed;
 let tempSbDirection;
-// 発射位置がステージの中央だった場合、NITROのSBとDOOMBOXのSMのバウンド処理が上手く動作しないので高さのみずらす
-//const adjustment = -60;
-const adjustment = 0;
 // ボール射出スタート地点
-//let start = {x:wallTthickness + stageWidth / 2, y:wallTthickness + stageHeight / 2 + adjustment};
-let start = {x:wallTthickness + dummyWallTthickness + stageWidth / 2, y:wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment};
-
+let start = {x:wallTthickness + dummyWallTthickness + stageWidth / 2, y:wallTthickness + dummyWallTthickness + stageHeight / 2};
+// ボールスタート地点ドラッグ用設定
 let draggedSprite = null;
 let offsetX = 0;
 let offsetY = 0;
@@ -195,13 +190,12 @@ function preload() {
 
 function setup() {
 
-    //let canvas = createCanvas(stageWidth + wallTthickness * 2, stageHeight + wallTthickness * 2 + buttonHeight);
+    // キャンバスの大きさはステージサイズと壁の厚さとダミー壁の厚さの合計になる
     let canvas = createCanvas(stageWidth + wallTthickness * 2 + dummyWallTthickness * 2, stageHeight + wallTthickness * 2 + dummyWallTthickness * 2 + buttonHeight);
     canvas.parent('canvas');
 
     // ボールの軌跡用レイヤー
     lineLayer = createGraphics(width, height - buttonHeight);
-    //lineLayer = createGraphics(stageWidth + dummyWallTthickness * 2, stageHeight + dummyWallTthickness * 2);
 
     // 四方の壁スプライトを作成
     // 天井
@@ -250,7 +244,7 @@ function setup() {
     // スタート地点のボールのスプライトを作成
     point = createSprite();
     // 当たり判定確認用
-    point.debug = true;
+    //point.debug = true;
     // ボールの射出位置
     point.position.x = start.x;
     point.position.y = start.y;
@@ -260,9 +254,9 @@ function setup() {
     point.draw = function() {
         strokeWeight(ballStrokeWeight);
         stroke(ballStrokeColor);
-        //fill("#00ff00");
+        fill("#00ff00");
         // 当たり判定確認用
-        fill(0);
+        //fill(0);
         ellipse(0, 0, diameter);
     }
     
@@ -442,12 +436,11 @@ function setup() {
         leftButton.addImage(leftOffImage);
         rightButton.addImage(rightOnImage);
 
-        //let start = {x:wallTthickness + dummyWallTthickness + stageWidth / 2, y:wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment};
         start.x = wallTthickness + dummyWallTthickness + stageWidth / 2;
-        start.y = wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment;
+        start.y = wallTthickness + dummyWallTthickness + stageHeight / 2;
 
         point.position.x = wallTthickness + dummyWallTthickness + stageWidth / 2;
-        point.position.y = wallTthickness + dummyWallTthickness + stageHeight / 2 + adjustment;
+        point.position.y = wallTthickness + dummyWallTthickness + stageHeight / 2;
 
         lineLayer.background(backgroundColor);
         
@@ -725,7 +718,6 @@ function draw() {
 
     // 軌道用キャンバスを描画する
     image(lineLayer, 0, 0);
-    //image(lineLayer, wallTthickness, wallTthickness);
 
     update();
     drawSprites();
