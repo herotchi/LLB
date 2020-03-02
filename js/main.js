@@ -1,6 +1,3 @@
-// キャラクター
-let character;
-
 // ステージ設定
 // ステージサイズ
 let stageWidth = 1100;
@@ -15,7 +12,7 @@ const wallTthickness = 20;
 // ステージ壁の色
 const wallColor = "#000000";
 // ステージ背景
-const backgroundColor = 200;
+const backgroundColor = 225;
 // ダミー壁のスプライト
 let dummyLeftWall;
 let dummyTopWall;
@@ -38,6 +35,7 @@ const restitution = 1;
 // 摩擦係数
 const friction = 0;
 // ボールの色
+const pointColor = "#00ff00";
 const upColor = "#008000";// 緑
 const gdColor = "#0000ff";// 青
 const adColor = "#bce2e8";// 水
@@ -63,8 +61,6 @@ let adFlg = false;
 let smFlg = false;
 let sfFlg = false;
 let sbFlg = false;
-// 角度データ
-let angle;
 // 一時的にボールのスピードと方向を保存する変数
 let tempUpSpeed = maxSpeed;
 let tempUpDirection;
@@ -80,10 +76,38 @@ let tempSbSpeed = maxSpeed;
 let tempSbDirection;
 // ボール射出スタート地点
 let start = {x:wallTthickness + dummyWallTthickness + stageWidth / 2, y:wallTthickness + dummyWallTthickness + stageHeight / 2};
+// スタートボールの輪郭線の太さ
+const pointStrokeWeight = 4;
+// スタートボールの輪郭線の色
+const pointStrokeColor = "#ff00ff";
 // ボールスタート地点ドラッグ用設定
-let draggedSprite = null;
-let offsetX = 0;
-let offsetY = 0;
+let pointDraggedSprite = null;
+let pointOffsetX = 0;
+let pointOffsetY = 0;
+
+// キャラクター設定
+// キャラクター（打つ側）
+let character;
+// キャラクター（受ける側）
+let hurtboxChara;
+// キャラクターの角度情報
+let angle;
+// キャラクターのHurtbox情報
+let hurtbox;
+// キャラクターのHurtboxスプライト
+let hurtboxSp;
+// Hurtboxドラッグ設定
+let hurtboxDraggedSprite = null;
+let hurtboxOffsetX = 0;
+let hurtboxOffsetY = 0;
+let hurtboxX = 1050;
+let hurtboxY = 480;
+// Hurtboxの色
+const hurtboxColor = "rgba(0, 0, 0, 0.5)";
+// Hurtboxの輪郭線の太さ
+const hurtboxStrokeWeight = 4;
+// Hurtboxの輪郭線の色
+const hurtboxStrokeColor = "#ff00ff";
 
 // 軌跡
 // 軌跡描画レイヤー
@@ -139,6 +163,8 @@ let leftOnImage;
 let leftOffImage;
 let rightOnImage;
 let rightOffImage;
+let saveOnImage;
+let saveOffImage;
 // ボタンスプライト
 let playButton;
 let stopButton;
@@ -151,6 +177,7 @@ let sfButton;
 let sbButton;
 let leftButton;
 let rightButton;
+let saveButton;
 
 // フラグ設定
 // 再生フラグ
@@ -164,6 +191,8 @@ let rightFlg = true;
 
 function preload() {
     angle = loadJSON('/LLB/json/angle.json');
+    hurtbox = loadJSON('/LLB/json/hurtbox.json');
+
     playOnImage = loadImage('/LLB/img/play_on.png');
     playOffImage = loadImage('/LLB/img/play_off.png');
     stopOnImage = loadImage('/LLB/img/stop_on.png');
@@ -186,6 +215,8 @@ function preload() {
     leftOffImage = loadImage('/LLB/img/left_off.png');
     rightOnImage = loadImage('/LLB/img/right_on.png');
     rightOffImage = loadImage('/LLB/img/right_off.png');
+    saveOnImage = loadImage('/LLB/img/save_on.png');
+    saveOffImage = loadImage('/LLB/img/save_off.png');
 }
 
 function setup() {
@@ -252,32 +283,30 @@ function setup() {
     point.setCollider("circle", 0, 0, diameter/2);
     // ボールの描画
     point.draw = function() {
-        strokeWeight(ballStrokeWeight);
-        stroke(ballStrokeColor);
-        fill("#00ff00");
+        strokeWeight(pointStrokeWeight);
+        stroke(pointStrokeColor);
+        fill(pointColor);
         // 当たり判定確認用
         //fill(0);
         ellipse(0, 0, diameter);
     }
-    
     // スプライトがマウスプレスされたら
     point.onMousePressed = function() {
-
         // リセット後で球種を選択していない場合のみ開始位置を変更できる
-        if (resetFlg && draggedSprite === null && !upFlg && !gdFlg && !adFlg && !smFlg && !sfFlg && !sbFlg) {
+        if (resetFlg && pointDraggedSprite === null && !upFlg && !gdFlg && !adFlg && !smFlg && !sfFlg && !sbFlg) {
             // このスプライトをドラッグ
-            draggedSprite = this;
-            offsetX = draggedSprite.position.x - mouseX;
-            offsetY = draggedSprite.position.y - mouseY;
+            pointDraggedSprite = this;
+            pointOffsetX = pointDraggedSprite.position.x - mouseX;
+            pointOffsetY = pointDraggedSprite.position.y - mouseY;
         }
     }
     // スプライトマウスリリースされたら
     point.onMouseReleased = function() {
         // draggedSpriteをnullにしてドラッグ終了
-        if (resetFlg && draggedSprite === this) {
-            start.x = draggedSprite.position.x;
-            start.y = draggedSprite.position.y;
-            draggedSprite = null;
+        if (resetFlg && pointDraggedSprite === this) {
+            start.x = pointDraggedSprite.position.x;
+            start.y = pointDraggedSprite.position.y;
+            pointDraggedSprite = null;
         }
     }
 
@@ -291,6 +320,39 @@ function setup() {
     tempSmDirection = -1 * angle[character].smash;
     tempSfDirection = -1 * angle[character].spike_f;
     tempSbDirection = -1 * angle[character].spike_b;
+
+    // Hurtbox情報
+    hurtboxChara = $('#hurtbox option:selected').val();
+
+    // Hurtboxスプライトを作成
+    hurtboxSp = createSprite();
+    hurtboxSp.position.x = hurtboxX;
+    hurtboxSp.position.y = hurtboxY;
+    hurtboxSp.draw = function() {
+        strokeWeight(hurtboxStrokeWeight);
+        stroke(hurtboxStrokeColor);
+        fill(color(hurtboxColor));
+        rect(0, 0, hurtbox[hurtboxChara].width, hurtbox[hurtboxChara].height);
+    }
+    // スプライトがマウスプレスされたら
+    hurtboxSp.onMousePressed = function() {
+        // リセット後で球種を選択していない場合のみ開始位置を変更できる
+        if (hurtboxDraggedSprite === null) {
+            // このスプライトをドラッグ
+            hurtboxDraggedSprite = this;
+            hurtboxOffsetX = hurtboxDraggedSprite.position.x - mouseX;
+            hurtboxOffsetY = hurtboxDraggedSprite.position.y - mouseY;
+        }
+    }
+    // スプライトマウスリリースされたら
+    hurtboxSp.onMouseReleased = function() {
+        // draggedSpriteをnullにしてドラッグ終了
+        if (hurtboxDraggedSprite === this) {
+            hurtboxX = hurtboxDraggedSprite.position.x;
+            hurtboxY = hurtboxDraggedSprite.position.y;
+            hurtboxDraggedSprite = null;
+        }
+    }
 
     // ボタン群
     // 再生ボタン
@@ -325,6 +387,9 @@ function setup() {
                 sbSp.setSpeed(tempSbSpeed, tempSbDirection);
             }
             
+            // 一時停止時のみ画像保存ボタンが有効になる
+            saveButton.addImage(saveOffImage);
+
             playFlg = true;
             stopFlg = false;
             resetFlg = false;
@@ -373,6 +438,10 @@ function setup() {
                 tempSbDirection = sbSp.getDirection();
                 sbSp.setSpeed(0, 0);
             }
+
+            // 一時停止時のみ画像保存ボタンが有効になる
+            saveButton.addImage(saveOnImage);
+
             playFlg = false;
             stopFlg = true;
         }
@@ -431,6 +500,9 @@ function setup() {
             tempSbDirection = -1 * angle[character].spike_b;
             sbFlg = false;
         }
+
+        // 一時停止時のみ画像保存ボタンが有効になる
+        saveButton.addImage(saveOffImage);
 
         // 打球方向もリセットする
         leftButton.addImage(leftOffImage);
@@ -702,12 +774,23 @@ function setup() {
             rightFlg = false;
         }
     }
+
+    // 画像保存ボタン
+    saveButton = createSprite(width - (buttonWidth * 3 + buttonWidth / 2), height -buttonHeight / 2);
+    saveButton.addImage(saveOffImage);
+    saveButton.scale = 0.4;
+    saveButton.onMousePressed = function() {
+        // 一時停止時のみ保存可能
+        if (!playFlg && stopFlg && !resetFlg) {
+            saveCanvas("from_" + character + "_to_" + hurtboxChara + "_", "jpg");
+        }
+    }
 }
 
 function draw() {
 
     // リセット後で球種を選択していない場合のみキャラクターを変更できる
-    if (resetFlg && draggedSprite === null && !upFlg && !gdFlg && !adFlg && !smFlg && !sfFlg && !sbFlg) {
+    if (resetFlg && pointDraggedSprite === null && !upFlg && !gdFlg && !adFlg && !smFlg && !sfFlg && !sbFlg) {
         $("#character").attr("disabled", false);
     } else {
         $("#character").attr("disabled", true);
@@ -768,12 +851,20 @@ function draw() {
 
 function update() {
 
-    // nullでないdraggedSpriteをドラッグ
-    if (resetFlg && draggedSprite != null
-         && (0 + wallTthickness + dummyWallTthickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
-         && (0 + wallTthickness + dummyWallTthickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
-        draggedSprite.position.x = mouseX + offsetX;
-        draggedSprite.position.y = mouseY + offsetY;
+    // nullでないpointDraggedSpriteをドラッグ
+    if (resetFlg && pointDraggedSprite != null
+        && (0 + wallTthickness + dummyWallTthickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
+        && (0 + wallTthickness + dummyWallTthickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
+        pointDraggedSprite.position.x = mouseX + pointOffsetX;
+        pointDraggedSprite.position.y = mouseY + pointOffsetY;
+    }
+
+    // nullでないhurtboxDraggedSpriteをドラッグ
+    if (hurtboxDraggedSprite != null
+        && (0 + wallTthickness + dummyWallTthickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
+        && (0 + wallTthickness + dummyWallTthickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
+        hurtboxDraggedSprite.position.x = mouseX + hurtboxOffsetX;
+        hurtboxDraggedSprite.position.y = mouseY + hurtboxOffsetY;
     }
 
     // ボールと四方の壁との跳ね返り
@@ -828,4 +919,13 @@ $(function() {
         tempSfDirection = -1 * angle[character].spike_f;
         tempSbDirection = -1 * angle[character].spike_b;
     });
-  });
+
+    $('#hurtbox').change(function() {
+   
+        // 選択されたキャラクターからHurtbox情報を代入する
+        hurtboxChara = $(this).val();
+        // Hurtboxサイズを変更
+        hurtboxSp.width = hurtbox[hurtboxChara].width;
+        hurtboxSp.height = hurtbox[hurtboxChara].height;
+    });
+});
