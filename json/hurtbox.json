@@ -1,0 +1,50 @@
+{
+  "Toxic": {
+    "width": 60,
+    "height": 138
+  },
+  "Grid": {
+    "width": 70,
+    "height": 160
+  },
+  "Dice": {
+    "width": 60,
+    "height": 148
+  },
+  "Latch": {
+    "width": 80,
+    "height": 136
+  },
+  "Sonata": {
+    "width": 60,
+    "height": 140
+  },
+  "Switch": {
+    "width": 60,
+    "height": 146
+  },
+  "Raptor": {
+    "width": 60,
+    "height": 126
+  },
+  "Candyman": {
+    "width": 60,
+    "height": 152
+  },
+  "Jet": {
+    "width": 60,
+    "height": 148
+  },
+  "Doombox": {
+    "width": 100,
+    "height": 170
+  },
+  "Nitro": {
+    "width": 65,
+    "height": 148
+  },
+  "Dust&Ashes": {
+    "width": 60,
+    "height": 142
+  }
+}
