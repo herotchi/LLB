@@ -28,6 +28,8 @@ const maxSpeed = 5;
 const diameter = 20;
 // ダミー壁の厚さはボールの半径を等しい
 const dummyWallTthickness = diameter/2;
+// 壁とダミー壁の厚さの合計
+let sumWallThickness = wallTthickness + dummyWallTthickness;
 // スプライトの重さ
 const mass = 1;
 // 反発係数
@@ -75,7 +77,7 @@ let tempSfDirection;
 let tempSbSpeed = maxSpeed;
 let tempSbDirection;
 // ボール射出スタート地点
-let start = {x:wallTthickness + dummyWallTthickness + stageWidth / 2, y:wallTthickness + dummyWallTthickness + stageHeight / 2};
+let start = {x:sumWallThickness + stageWidth / 2, y:sumWallThickness + stageHeight / 2};
 // スタートボールの輪郭線の太さ
 const pointStrokeWeight = 4;
 // スタートボールの輪郭線の色
@@ -179,6 +181,10 @@ let leftButton;
 let rightButton;
 let saveButton;
 
+// スプリットラインの色
+const splitLineColor = "#696969";
+const splitLineStrokeWeight = 2;
+
 // フラグ設定
 // 再生フラグ
 let playFlg = false;
@@ -227,6 +233,9 @@ function setup() {
 
     // ボールの軌跡用レイヤー
     lineLayer = createGraphics(width, height - buttonHeight);
+
+    // スプリットライン用レイヤー
+    splitLineLayer = createGraphics(width, height - buttonHeight);
 
     // 四方の壁スプライトを作成
     // 天井
@@ -508,11 +517,11 @@ function setup() {
         leftButton.addImage(leftOffImage);
         rightButton.addImage(rightOnImage);
 
-        start.x = wallTthickness + dummyWallTthickness + stageWidth / 2;
-        start.y = wallTthickness + dummyWallTthickness + stageHeight / 2;
+        start.x = sumWallThickness + stageWidth / 2;
+        start.y = sumWallThickness + stageHeight / 2;
 
-        point.position.x = wallTthickness + dummyWallTthickness + stageWidth / 2;
-        point.position.y = wallTthickness + dummyWallTthickness + stageHeight / 2;
+        point.position.x = sumWallThickness + stageWidth / 2;
+        point.position.y = sumWallThickness + stageHeight / 2;
 
         lineLayer.background(backgroundColor);
         
@@ -802,6 +811,23 @@ function draw() {
     // 軌道用キャンバスを描画する
     image(lineLayer, 0, 0);
 
+    // スプリットライン用キャンバスを描画する
+    image(splitLineLayer, 0, 0);
+
+    // スプリットラインの描画
+    splitLineLayer.strokeWeight(splitLineStrokeWeight);
+    splitLineLayer.stroke(splitLineColor);
+    // 縦ライン
+    splitLineLayer.line(sumWallThickness + stageWidth/6, sumWallThickness, sumWallThickness + stageWidth/6, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth/3, sumWallThickness, sumWallThickness + stageWidth/3, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth/2, sumWallThickness, sumWallThickness + stageWidth/2, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth * 4/6, sumWallThickness, sumWallThickness + stageWidth * 4/6, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth * 5/6, sumWallThickness, sumWallThickness + stageWidth * 5/6, sumWallThickness + stageHeight);
+    // 横ライン
+    splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight/4, sumWallThickness + stageWidth, sumWallThickness + stageHeight/4);
+    splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight/2, sumWallThickness + stageWidth, sumWallThickness + stageHeight/2);
+    splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight * 3/4, sumWallThickness + stageWidth, sumWallThickness + stageHeight * 3/4);
+
     update();
     drawSprites();
 
@@ -853,16 +879,16 @@ function update() {
 
     // nullでないpointDraggedSpriteをドラッグ
     if (resetFlg && pointDraggedSprite != null
-        && (0 + wallTthickness + dummyWallTthickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
-        && (0 + wallTthickness + dummyWallTthickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
+        && (0 + sumWallThickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
+        && (0 + sumWallThickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
         pointDraggedSprite.position.x = mouseX + pointOffsetX;
         pointDraggedSprite.position.y = mouseY + pointOffsetY;
     }
 
     // nullでないhurtboxDraggedSpriteをドラッグ
     if (hurtboxDraggedSprite != null
-        && (0 + wallTthickness + dummyWallTthickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
-        && (0 + wallTthickness + dummyWallTthickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
+        && (0 + sumWallThickness) <= mouseX && mouseX <= (width - wallTthickness - dummyWallTthickness)
+        && (0 + sumWallThickness) <= mouseY && mouseY <= (height - buttonHeight - wallTthickness - dummyWallTthickness)) {
         hurtboxDraggedSprite.position.x = mouseX + hurtboxOffsetX;
         hurtboxDraggedSprite.position.y = mouseY + hurtboxOffsetY;
     }
