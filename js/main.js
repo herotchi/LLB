@@ -181,8 +181,11 @@ let leftButton;
 let rightButton;
 let saveButton;
 
+// スプリットライン描画レイヤー
+let splitLineLayer;
 // スプリットラインの色
 const splitLineColor = "#696969";
+// スプリットラインの太さ
 const splitLineStrokeWeight = 2;
 
 // フラグ設定
