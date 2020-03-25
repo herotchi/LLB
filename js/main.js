@@ -794,7 +794,15 @@ function setup() {
     saveButton.onMousePressed = function() {
         // 一時停止時のみ保存可能
         if (!playFlg && stopFlg && !resetFlg) {
-            saveCanvas("from_" + character + "_to_" + hurtboxChara + "_", "jpg");
+            var fileNameChara = "from_" + character + "_to_" + hurtboxChara + "_";
+            var fileNameDirection;
+            if (rightFlg) {
+                fileNameDirection = "right_";
+            } else {
+                fileNameDirection = "left_";
+            }
+
+            saveCanvas(fileNameChara + fileNameDirection, "jpg");
         }
     }
 }
