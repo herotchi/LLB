@@ -184,7 +184,7 @@ let saveButton;
 // スプリットライン描画レイヤー
 let splitLineLayer;
 // スプリットラインの色
-const splitLineColor = "#696969";
+const splitLineColor = "#a9a9a9";
 // スプリットラインの太さ
 const splitLineStrokeWeight = 2;
 
@@ -794,7 +794,15 @@ function setup() {
     saveButton.onMousePressed = function() {
         // 一時停止時のみ保存可能
         if (!playFlg && stopFlg && !resetFlg) {
-            saveCanvas("from_" + character + "_to_" + hurtboxChara + "_", "jpg");
+            var fileNameChara = "from_" + character + "_to_" + hurtboxChara + "_";
+            var fileNameDirection;
+            if (rightFlg) {
+                fileNameDirection = "right_";
+            } else {
+                fileNameDirection = "left_";
+            }
+
+            saveCanvas(fileNameChara + fileNameDirection, "jpg");
         }
     }
 }
@@ -821,15 +829,25 @@ function draw() {
     splitLineLayer.strokeWeight(splitLineStrokeWeight);
     splitLineLayer.stroke(splitLineColor);
     // 縦ライン
+    splitLineLayer.line(sumWallThickness + stageWidth/12, sumWallThickness, sumWallThickness + stageWidth/12, sumWallThickness + stageHeight);
     splitLineLayer.line(sumWallThickness + stageWidth/6, sumWallThickness, sumWallThickness + stageWidth/6, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth/4, sumWallThickness, sumWallThickness + stageWidth/4, sumWallThickness + stageHeight);
     splitLineLayer.line(sumWallThickness + stageWidth/3, sumWallThickness, sumWallThickness + stageWidth/3, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth * 5/12, sumWallThickness, sumWallThickness + stageWidth * 5/12, sumWallThickness + stageHeight);
     splitLineLayer.line(sumWallThickness + stageWidth/2, sumWallThickness, sumWallThickness + stageWidth/2, sumWallThickness + stageHeight);
-    splitLineLayer.line(sumWallThickness + stageWidth * 4/6, sumWallThickness, sumWallThickness + stageWidth * 4/6, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth * 7/12, sumWallThickness, sumWallThickness + stageWidth * 7/12, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth * 2/3, sumWallThickness, sumWallThickness + stageWidth * 2/3, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth * 3/4, sumWallThickness, sumWallThickness + stageWidth * 3/4, sumWallThickness + stageHeight);
     splitLineLayer.line(sumWallThickness + stageWidth * 5/6, sumWallThickness, sumWallThickness + stageWidth * 5/6, sumWallThickness + stageHeight);
+    splitLineLayer.line(sumWallThickness + stageWidth * 11/12, sumWallThickness, sumWallThickness + stageWidth * 11/12, sumWallThickness + stageHeight);
     // 横ライン
+    splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight/8, sumWallThickness + stageWidth, sumWallThickness + stageHeight/8);
     splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight/4, sumWallThickness + stageWidth, sumWallThickness + stageHeight/4);
+    splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight * 3/8, sumWallThickness + stageWidth, sumWallThickness + stageHeight * 3/8);
     splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight/2, sumWallThickness + stageWidth, sumWallThickness + stageHeight/2);
+    splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight * 5/8, sumWallThickness + stageWidth, sumWallThickness + stageHeight * 5/8);
     splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight * 3/4, sumWallThickness + stageWidth, sumWallThickness + stageHeight * 3/4);
+    splitLineLayer.line(sumWallThickness, sumWallThickness + stageHeight * 7/8, sumWallThickness + stageWidth, sumWallThickness + stageHeight * 7/8);
 
     update();
     drawSprites();
